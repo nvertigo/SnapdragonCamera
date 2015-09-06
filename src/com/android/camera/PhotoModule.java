@@ -2830,10 +2830,14 @@ public class PhotoModule
         }
         mErrorCallback.setActivity(mActivity);
         mCameraDevice.setErrorCallback(mErrorCallback);
-        // ICS camera frameworks has a bug. Face detection state is not cleared 1589
-        // after taking a picture. Stop the preview to work around it. The bug
-        // was fixed in JB.
+
+        // Reset camera state after taking a picture
         if (mCameraState != PREVIEW_STOPPED && mCameraState != INIT) {
+            setCameraState(IDLE);
+        }
+
+        // Preview needs to be stopped when changing resolution
+        if (mRestartPreview && mCameraState != PREVIEW_STOPPED && mCameraState != INIT) {
             stopPreview();
         }
 
